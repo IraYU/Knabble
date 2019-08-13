@@ -9,7 +9,7 @@ export type d3Link = {
     value: number
 };
 
-export type Graph = {
+export type d3Data = {
     nodes: d3Node[],
     links: d3Link[]
 };
