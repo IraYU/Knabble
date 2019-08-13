@@ -5,7 +5,6 @@ import { createAxes } from './utils';
 import './LineChart.scss'
 
 class LineChart extends Component<any> {
-    ref: any;
     constructor(props: any) {
         super(props);
     }
@@ -21,12 +20,7 @@ class LineChart extends Component<any> {
             <svg
                 className={`line-chart ${className}`}
                 width={width}
-                height={height}>
-{/*
-                    <Links links={data.links}/>
-                    <Nodes nodes={data.nodes} simulation={this.simulation}/>
-*/}
-            </svg>
+                height={height} />
         )
     }
 }
