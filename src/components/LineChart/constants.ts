@@ -19,9 +19,5 @@ export const defaultProps = {
 
 export const defaultLineChartProps = {
     ...defaultProps,
-    lineColor: 'orange',
-    lineWidth: 2,
-    dotsColor: 'orange',
-    dotsFill: '#ffcf76',
-    dotsWidth: 2
+    dotsRadius: 4,
 };
