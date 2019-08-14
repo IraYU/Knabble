@@ -7,13 +7,20 @@
   }
 
   .dot {
-    fill: #ffcf76;
+    fill: #fff;
     stroke: orange;
     stroke-width: 2px;
+
+    &:hover {
+      cursor: pointer;
+    }
 
     &.selected {
       fill: #21908d;
       stroke: #21908d;
+    }
+    &.moved {
+      fill: #ffcf76;
     }
   }
 
