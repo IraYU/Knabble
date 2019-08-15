@@ -60,11 +60,7 @@ export const createAxes = (props: any) => {
         .attr('r', dotsRadius)
         .attr('cx', (d: any) =>  xScale(d[0]) )
         .attr('cy', (d: any) =>  yScale(d[1]))
-        .call(drag<any, unknown>()
-            .subject(d => {
-                console.log(d,'d')
-                return d;
-            })
+        .call(drag<any, any>()
             .on("start", function(d: any) {
                 select(this).raise().classed('selected', true);
             })
