@@ -1,8 +1,7 @@
-// import * as d3 from 'd3';
 import {
     scaleLinear, select, axisBottom, axisLeft,
     line, curveCatmullRom, drag, event,
-    brush, brushX, extent, max,
+    brush, brushX,
 } from 'd3';
 
 export const createAxes = (props: any) => {

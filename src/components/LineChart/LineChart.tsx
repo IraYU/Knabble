@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { d3Node } from './types';
 import { createAxes } from './utils';
 
 import './LineChart.scss'
@@ -12,11 +11,6 @@ class LineChart extends Component<any> {
     componentDidMount() {
         createAxes(this.props);
     }
-    /*
-    componentDidUpdate(prevProps: any) {
-        createAxes(prevProps);
-    }
-    */
 
     render() {
         const { width, height, className } = this.props;
