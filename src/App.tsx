@@ -2,11 +2,9 @@ import React from 'react';
 import LineChart from './components/LineChart/LineChart';
 import { data, defaultLineChartProps } from './components/LineChart/constants';
 
-import './App.css';
-
 const App: React.FC = () => {
   return (
-    <div className="App">
+    <div className="content">
         <LineChart
             {...defaultLineChartProps}
             className="test-chart"
