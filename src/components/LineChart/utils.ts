@@ -38,6 +38,22 @@ export const createAxes = (props: any) => {
         .attr('class', 'axis axis-y')
         .call(axisLeft(yScale));
 
+
+    // zoom Brush
+    /*    const zoomBrush = brushX()
+          .extent( [ [0,0], [width,height] ] )
+          .on("end brush", zoomChart);   */
+    // selectDots Brush
+    const dotsBrush = brush()
+        .extent( [[0, 0], [width, height]])
+        .on("end brush", selectDots);
+    const brushDotsArea = svg.append('g')
+        .attr("clip-path", "url(#clip)")
+        .append("g")
+        .classed('brush', true)
+        .call(dotsBrush)
+    //.call(zoomBrush);
+
     // Create line
     const lineData = line()
         .x((d: any) =>  xScale(d[0]))
@@ -79,20 +95,17 @@ export const createAxes = (props: any) => {
             })
         );
 
-    // selectDots Brush
-    const dotsBrush = brush()
-        .extent( [[0, 0], [width, height]])
-        .on("end brush", selectDots);
-    const brushDotsArea = svg.append('g')
-        .attr("clip-path", "url(#clip)")
-        .append("g")
-        .classed('brush', true)
-        .call(dotsBrush);
+
+
     function selectDots() {
         const brushArea = event.selection;
+        //if (event.sourceEvent.type === "brush") return;
         dots.classed( "brushed", (d: any) => brushArea && isBrushed(brushArea, xScale(d[0]), yScale(d[1])));
-        //brushDotsArea.select(".brush").call(dotsBrush.move, null)
+       // brushDotsArea.select(".brush").call(dotsBrush.move, null)
     }
+/*    function selectDots() {
+
+    }*/
     function isBrushed(brushArea: any, cx: number, cy: number) {
         let x0 = brushArea[0][0],
             x1 = brushArea[1][0],
