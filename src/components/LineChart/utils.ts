@@ -38,21 +38,23 @@ export const createAxes = (props: any) => {
         .attr('class', 'axis axis-y')
         .call(axisLeft(yScale));
 
-
     // zoom Brush
-    /*    const zoomBrush = brushX()
-          .extent( [ [0,0], [width,height] ] )
-          .on("end brush", zoomChart);   */
+    const zoomBrush = brushX()
+        .filter((): any =>  event.button === 2)
+        .extent( [[0, 0], [width, height]] )
+        .on("end", zoomChart);
+
     // selectDots Brush
     const dotsBrush = brush()
         .extent( [[0, 0], [width, height]])
         .on("end brush", selectDots);
+
     const brushDotsArea = svg.append('g')
         .attr("clip-path", "url(#clip)")
         .append("g")
         .classed('brush', true)
-        .call(dotsBrush)
-    //.call(zoomBrush);
+        //.call(dotsBrush)
+        .call(zoomBrush);
 
     // Create line
     const lineData = line()
@@ -95,17 +97,63 @@ export const createAxes = (props: any) => {
             })
         );
 
-
-
     function selectDots() {
         const brushArea = event.selection;
-        //if (event.sourceEvent.type === "brush") return;
         dots.classed( "brushed", (d: any) => brushArea && isBrushed(brushArea, xScale(d[0]), yScale(d[1])));
        // brushDotsArea.select(".brush").call(dotsBrush.move, null)
     }
-/*    function selectDots() {
 
-    }*/
+    let idleTimeout: any;
+    function idled() { idleTimeout = null;}
+
+    function zoomChart() {
+        const brushArea = event.selection;
+
+        if (!brushArea) {
+            if (!idleTimeout) return idleTimeout = setTimeout(idled, 350);
+            xScale.domain([0, data.length])
+        } else {
+            xScale.domain([ xScale.invert(brushArea[0]), xScale.invert(brushArea[1]) ])
+        }
+
+        zoom();
+
+        resetZoom();
+    }
+
+    function zoom() {
+        xAxis.transition().duration(1000)
+            .call(axisBottom(xScale));
+
+        svg.select('.line')
+            .transition()
+            .duration(1000)
+            .attr("d", <any>lineData);
+        dots.transition()
+            .duration(1000)
+            .attr('cx', (d: any) => xScale(d[0]) )
+            .attr('cy', (d: any) => yScale(d[1]))
+        //brushDotsArea.select(".brush").call(dotsBrush.move, null)
+    }
+
+    function resetZoom() {
+        svg.on("dblclick",function(){
+            xScale.domain([0, data.length])
+            xAxis.transition().duration(1000).call(axisBottom(xScale))
+
+            svg.select('.line')
+                .transition()
+                .duration(1000)
+                .attr("d", <any>lineData);
+            dots.transition()
+                .duration(1000)
+                .attr('cx', (d: any) => xScale(d[0]) )
+                .attr('cy', (d: any) => yScale(d[1]))
+
+        });
+        //brushDotsArea.select(".brush").call(dotsBrush.move, null)
+    }
+
     function isBrushed(brushArea: any, cx: number, cy: number) {
         let x0 = brushArea[0][0],
             x1 = brushArea[1][0],
@@ -113,12 +161,4 @@ export const createAxes = (props: any) => {
             y1 = brushArea[1][1];
         return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
     }
-
-
-
-
-
-
-
-    //svg.exit().remove();
 };
