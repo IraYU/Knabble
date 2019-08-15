@@ -1,5 +1,13 @@
 .line-chart {
 
+  .axis * {
+    stroke: #999;
+    
+    text {
+      stroke: #666;
+    }
+  }
+
   .line {
     fill: none;
     stroke: orange;

@@ -12,7 +12,12 @@ class LineChart extends Component<any> {
     componentDidMount() {
         createAxes(this.props);
     }
-    
+    /*
+    componentDidUpdate(prevProps: any) {
+        createAxes(prevProps);
+    }
+    */
+
     render() {
         const { width, height, className, data } = this.props;
 
