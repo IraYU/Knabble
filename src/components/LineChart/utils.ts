@@ -20,8 +20,8 @@ export const createAxes = (props: any) => {
     const getColors = (className: string, i: number) =>`${className} ${className}-${i}`;
 
     const svg = select(`.${className}`)
-        .append("g")
-        .attr("transform", `translate(${plotIndents.left}, ${plotIndents.top})`);
+        .append('g')
+        .attr('transform', `translate(${plotIndents.left}, ${plotIndents.top})`);
 
     // Add Axises
     const xScale = scaleLinear()
@@ -42,17 +42,24 @@ export const createAxes = (props: any) => {
     const zoomBrush = brushX()
         .filter((): any =>  event.button === 2)
         .extent( [[0, 0], [width, height]] )
-        .on("end", zoomChart);
+        .on('end', zoomChart);
 
     // selectDots Brush
     const dotsBrush = brush()
         .extent( [[0, 0], [width, height]])
-        .on("end brush", selectDots);
+        .on('end brush', selectDots);
+
+/*    const brushZoomArea = svg.append('g')
+        .attr('clip-path', 'url(#clip)')
+        .append('g')
+        .classed('brush brush-right-button', true)
+        //.call(dotsBrush)
+        .call(zoomBrush);*/
 
     const brushDotsArea = svg.append('g')
-        .attr("clip-path", "url(#clip)")
-        .append("g")
-        .classed('brush', true)
+        .attr('clip-path', 'url(#clip)')
+        .append('g')
+        .classed('brush brush-left-button', true)
         //.call(dotsBrush)
         .call(zoomBrush);
 
@@ -73,15 +80,15 @@ export const createAxes = (props: any) => {
         .data(data)
         .enter()
         .append('circle')
-        .attr("class", (d: any, i: number) => getColors('dot', i))
+        .attr('class', (d: any, i: number) => getColors('dot', i))
         .attr('r', dotsRadius)
         .attr('cx', (d: any) => xScale(d[0]) )
         .attr('cy', (d: any) => yScale(d[1]))
         .call(drag<any, any>()
-            .on("start", function(d: any) {
+            .on('start', function(d: any) {
                 select(this).raise().classed('selected', true);
             })
-            .on("drag", function(d: any) {
+            .on('drag', function(d: any) {
                 d[1] = yScale.invert(event.y);
 
                 select(this)
@@ -90,7 +97,7 @@ export const createAxes = (props: any) => {
 
                 svg.select('.line').datum(data).attr('d', lineData);
             })
-            .on("end", function(d: any) {
+            .on('end', function(d: any) {
                 select(this)
                     .classed('selected', false)
                     .classed('moved', true)
@@ -99,8 +106,11 @@ export const createAxes = (props: any) => {
 
     function selectDots() {
         const brushArea = event.selection;
-        dots.classed( "brushed", (d: any) => brushArea && isBrushed(brushArea, xScale(d[0]), yScale(d[1])));
-       // brushDotsArea.select(".brush").call(dotsBrush.move, null)
+
+        if (event.sourceEvent.type === 'mouseup') {
+            svg.select('.brush-left-button').call(<any>dotsBrush.move, null)
+        }
+        dots.classed( 'brushed', (d: any) => brushArea && isBrushed(brushArea, xScale(d[0]), yScale(d[1])));
     }
 
     let idleTimeout: any;
@@ -117,7 +127,6 @@ export const createAxes = (props: any) => {
         }
 
         zoom();
-
         resetZoom();
     }
 
@@ -128,30 +137,29 @@ export const createAxes = (props: any) => {
         svg.select('.line')
             .transition()
             .duration(1000)
-            .attr("d", <any>lineData);
+            .attr('d', <any>lineData);
         dots.transition()
             .duration(1000)
             .attr('cx', (d: any) => xScale(d[0]) )
             .attr('cy', (d: any) => yScale(d[1]))
-        //brushDotsArea.select(".brush").call(dotsBrush.move, null)
+        svg.select('.brush').call(<any>zoomBrush.move, null)
     }
 
     function resetZoom() {
-        svg.on("dblclick",function(){
+        svg.on('dblclick',function(){
             xScale.domain([0, data.length])
             xAxis.transition().duration(1000).call(axisBottom(xScale))
 
             svg.select('.line')
                 .transition()
                 .duration(1000)
-                .attr("d", <any>lineData);
+                .attr('d', <any>lineData);
             dots.transition()
                 .duration(1000)
                 .attr('cx', (d: any) => xScale(d[0]) )
                 .attr('cy', (d: any) => yScale(d[1]))
 
         });
-        //brushDotsArea.select(".brush").call(dotsBrush.move, null)
     }
 
     function isBrushed(brushArea: any, cx: number, cy: number) {
