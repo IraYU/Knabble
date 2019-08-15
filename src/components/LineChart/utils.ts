@@ -79,14 +79,13 @@ export const createAxes = (props: any) => {
             })
         );
 
-
     // selectDots Brush
     const dotsBrush = brush()
         .extent( [[0, 0], [width, height]])
         .on("end brush", selectDots);
     const brushDotsArea = svg.append('g')
-        .attr("clip-path", "url(#clip)");
-    brushDotsArea.append("g")
+        .attr("clip-path", "url(#clip)")
+        .append("g")
         .classed('brush', true)
         .call(dotsBrush);
     function selectDots() {
