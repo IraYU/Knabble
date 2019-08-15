@@ -60,8 +60,8 @@ export const createAxes = (props: any) => {
         .attr('clip-path', 'url(#clip)')
         .append('g')
         .classed('brush brush-left-button', true)
-        //.call(dotsBrush)
-        .call(zoomBrush);
+        .call(dotsBrush)
+        //.call(zoomBrush);
 
     // Create line
     const lineData = line()
@@ -84,12 +84,14 @@ export const createAxes = (props: any) => {
         .attr('r', dotsRadius)
         .attr('cx', (d: any) => xScale(d[0]) )
         .attr('cy', (d: any) => yScale(d[1]))
-        .call(drag<any, any>()
+        .call(<any>drag()
             .on('start', function(d: any) {
                 select(this).raise().classed('selected', true);
             })
             .on('drag', function(d: any) {
-                d[1] = yScale.invert(event.y);
+                d[1] = yScale.invert(event.y) < 0 ? 0
+                    : yScale.invert(event.y) > 1 ? 1
+                        : yScale.invert(event.y);
 
                 select(this)
                     .attr('cx', xScale(d[0]))
