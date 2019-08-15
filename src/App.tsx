@@ -7,7 +7,14 @@ import './App.css';
 const App: React.FC = () => {
   return (
     <div className="App">
-        <LineChart {...defaultLineChartProps} data={data} width={800} height={600} className="test-chart" />
+        <LineChart
+            {...defaultLineChartProps}
+            className="test-chart"
+            data={data}
+            width={800}
+            height={600}
+            sort={true}
+        />
     </div>
   );
 }

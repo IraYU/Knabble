@@ -19,13 +19,10 @@ class LineChart extends Component<any> {
     */
 
     render() {
-        const { width, height, className, data } = this.props;
+        const { width, height, className } = this.props;
 
         return (
-            <svg
-                className={`line-chart ${className}`}
-                width={width}
-                height={height} />
+            <svg className={`line-chart ${className}`} width={width} height={height} />
         )
     }
 }

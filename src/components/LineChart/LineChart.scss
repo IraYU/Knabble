@@ -1,8 +1,13 @@
-.line-chart {
+$colors: #e6194b, #3cb44b, #ffe119, #4363d8,
+#f58231, #911eb4, #46f0f0, #f032e6,
+#bcf60c, #fabebe, #008080, #e6beff,
+#800000, #aaffc3, #6181b0, #febb79,
+#000075, #808080, #6a66d7, #c2f221;
 
+.line-chart {
   .axis * {
     stroke: #999;
-    
+
     text {
       stroke: #666;
     }
@@ -27,14 +32,22 @@
       fill: #21908d;
       stroke: #21908d;
     }
+
     &.moved {
       fill: #ffcf76;
+    }
+
+    @each $color in $colors {
+      $i: index($colors, $color);
+      &-#{$i}.selected {
+        fill: $color;
+        stroke: $color;
+      }
     }
   }
 
   .brush .selection {
     fill-opacity: 0.2;
     fill: #fde725;
-    // fill: #21908d;
   }
 }
