@@ -13,7 +13,7 @@ const App: React.FC = () => {
             data={data}
             width={800}
             height={600}
-            sort={true}
+            sortData={true}
         />
     </div>
   );

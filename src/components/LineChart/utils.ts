@@ -8,14 +8,16 @@ import {
 export const createAxes = (props: any) => {
     const {
         className, plotIndents,
-        dotsRadius, sort,
+        dotsRadius, sortData,
     } = props;
 
     const sortByX = (a: any, b: any) => a[0] < b[0] ? -1 : 1;
 
-    const data = sort ? props.data.sort(sortByX) : props.data;
+    const data = sortData ? props.data.sort(sortByX) : props.data;
     const width = props.width - plotIndents.left - plotIndents.right;
     const height =  props.height - plotIndents.top - plotIndents.bottom;
+
+    const getColors = (className: string, i: number) =>`${className} ${className}-${i}`;
 
     const svg = select(`.${className}`)
         .append("g")
@@ -77,32 +79,30 @@ export const createAxes = (props: any) => {
             })
         );
 
-    const dotsBrush = brush()
-        .extent( [[0, 0], [width, height]])
-        .on("end brush", selectDots)
 
     // selectDots Brush
-    svg.append("g")
+    const dotsBrush = brush()
+        .extent( [[0, 0], [width, height]])
+        .on("end brush", selectDots);
+    const brushDotsArea = svg.append('g')
+        .attr("clip-path", "url(#clip)");
+    brushDotsArea.append("g")
         .classed('brush', true)
         .call(dotsBrush);
-
-    function selectDots(d: any) {
+    function selectDots() {
         const brushArea = event.selection;
-
-        dots.classed( "selected", (d: any) => isBrushed(brushArea, xScale(d[0]), yScale(d[1])))
+        dots.classed( "brushed", (d: any) => brushArea && isBrushed(brushArea, xScale(d[0]), yScale(d[1])));
+        //brushDotsArea.select(".brush").call(dotsBrush.move, null)
     }
-
-    function getColors(className: string, i: number) {
-        return `${className} ${className}-${i}`
-    }
-
     function isBrushed(brushArea: any, cx: number, cy: number) {
         let x0 = brushArea[0][0],
             x1 = brushArea[1][0],
             y0 = brushArea[0][1],
             y1 = brushArea[1][1];
-        return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;    // This return TRUE or FALSE depending on if the points is in the selected area
+        return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
     }
+
+
 
 
 
