@@ -5,6 +5,7 @@ import { data, dataSmall, defaultLineChartProps } from './components/LineChart/c
 const App: React.FC = () => {
   return (
     <div className="content">
+        <h1>D3 line chart #1</h1>
         <LineChart
             {...defaultLineChartProps}
             key={'line-chart-1'}
@@ -16,6 +17,8 @@ const App: React.FC = () => {
             yAxisMax={1}
         />
 
+        <h2>D3 line chart #2 </h2>
+        <h5>(There are differences in data and sizes relative to the #1)</h5>
         <LineChart
             {...defaultLineChartProps}
             key={'line-chart-2'}
@@ -26,6 +29,8 @@ const App: React.FC = () => {
             sortData={true}
         />
 
+        <h2>D3 line chart #3</h2>
+        <h5>(There are differences in sizes and data sorting relative to the #2)</h5>
         <LineChart
             {...defaultLineChartProps}
             key={'line-chart-3'}

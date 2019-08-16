@@ -1,7 +1,7 @@
 import {
     scaleLinear, select, axisBottom, axisLeft,
     line, curveCatmullRom, drag, event,
-    brush, brushX, extent, max
+    brush, brushX, extent, max, mouse,selectAll
 } from 'd3';
 import { Data, Point } from "./types";
 
@@ -43,28 +43,14 @@ export const createLineChart = (props: any) => {
 
     // zoom Brush
     const zoomBrush = brushX()
-        .filter((): any =>  event.button === 2)
+        .filter((): any => event.button === 2)
         .extent( [[0, 0], [width, height]] )
         .on('end', zoomChart);
-
-    // selectDots Brush
-    const dotsBrush = brush()
-        .extent( [[0, 0], [width, height]])
-        .on('end brush', selectDots);
-
-/*    const brushZoomArea = svg.append('g')
+    const brushZoomArea = svg.append('g')
         .attr('clip-path', 'url(#clip)')
         .append('g')
         .classed('brush brush-right-button', true)
-        //.call(dotsBrush)
-        .call(zoomBrush);*/
-
-    const brushDotsArea = svg.append('g')
-        .attr('clip-path', 'url(#clip)')
-        .append('g')
-        .classed('brush brush-left-button', true)
-        .call(dotsBrush)
-        //.call(zoomBrush);
+        .call(zoomBrush);
 
     // Create line
     const lineData = line()
@@ -79,7 +65,9 @@ export const createLineChart = (props: any) => {
         .attr('d', lineData);
 
     // Create dots
-    const dots = svg.selectAll('circle')
+    const dots = svg.append('g')
+        .classed('dots', true)
+        .selectAll('circle')
         .data(data)
         .enter()
         .append('circle')
@@ -109,14 +97,76 @@ export const createLineChart = (props: any) => {
             })
         );
 
-    function selectDots() {
-        const brushArea = event.selection;
 
-        if (event.sourceEvent.type === 'mouseup') {
-            svg.select('.brush-left-button').call(<any>dotsBrush.move, null)
-        }
-        dots.classed( 'brushed', (d: Point) => brushArea && isBrushed(brushArea, xScale(d[0]), yScale(d[1])));
-    }
+    const brushDotsArea = select(`.${className}`)
+        .on( "mousedown", function() {
+            if( !event.ctrlKey) {
+                selectAll( '.dot.brushed').classed( "brushed", false);
+            }
+            const mousePoint = mouse(<any>this);
+
+            select(`.${className} .dots`)
+                .append( "rect")
+                .attr('class', 'selected-dots')
+                .attr('x', mousePoint[0])
+                .attr('y', mousePoint[1])
+                .attr('width', 0)
+                .attr('height', 0)
+        })
+        .on( "mousemove", function() {
+            const brushArea = select( `.${className} rect.selected-dots`);
+
+            if( !brushArea.empty()) {
+                const mousePoint = mouse(<any>this);
+                const d: any = {
+                    x       : parseInt( brushArea.attr( "x"), 10),
+                    y       : parseInt( brushArea.attr( "y"), 10),
+                    width   : parseInt( brushArea.attr( "width"), 10),
+                    height  : parseInt( brushArea.attr( "height"), 10)
+                };
+                const move = [mousePoint[0] - d.x, mousePoint[1] - d.y];
+
+                if( move[0] < 1 || (move[0]*2<d.width)) {
+                    d.x = mousePoint[0];
+                    d.width -= move[0];
+                } else {
+                    d.width = move[0];
+                }
+
+                if( move[1] < 1 || (move[1]*2<d.height)) {
+                    d.y = mousePoint[1];
+                    d.height -= move[1];
+                } else {
+                    d.height = move[1];
+                }
+
+                brushArea
+                    .attr('x', d.x)
+                    .attr('y',d.y)
+                    .attr('width', d.width)
+                    .attr('height', d.height);
+
+                selectAll( `.${className} .dot.selected-dots.brushed`).classed( "brushed", false);
+
+                selectAll( `.${className} .dot`)
+                    .each( function( dot: any) {
+                    if(!select(this).classed( "brushed") &&
+                        xScale(dot[0])-dotsRadius >= d.x &&
+                        xScale(dot[0])+dotsRadius <= d.x + d.width &&
+                        yScale(dot[1])-dotsRadius >= d.y &&
+                        yScale(dot[1])+dotsRadius <= d.y + d.height
+                    ) {
+                        select(this)
+                            .classed( "selected-dots", true)
+                            .classed( "brushed", true);
+                    }
+                });
+            }
+        })
+        .on( "mouseup", function() {
+            select( 'rect.selected-dots').remove();
+            selectAll( '.dots.selected-dots').classed( "selected-dots", false);
+        });
 
     let idleTimeout: any;
     function idled() { idleTimeout = null;}
@@ -165,13 +215,5 @@ export const createLineChart = (props: any) => {
                 .attr('cy', (d: Point) => yScale(d[1]))
 
         });
-    }
-
-    function isBrushed(brushArea: Data, cx: number, cy: number) {
-        let x0 = brushArea[0][0],
-            x1 = brushArea[1][0],
-            y0 = brushArea[0][1],
-            y1 = brushArea[1][1];
-        return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
     }
 };

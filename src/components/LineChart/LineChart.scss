@@ -54,4 +54,11 @@ $colors: #e6194b, #3cb44b, #ffe119, #4363d8,
     fill-opacity: 0.2;
     fill: #fde725;
   }
+
+  rect.selected-dots {
+    stroke: #21908d;
+    stroke-dasharray: 4px;
+    fill: #ffcf76;
+    fill-opacity: 0.2;
+  }
 }
