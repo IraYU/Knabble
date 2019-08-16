@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { createAxes } from './utils';
+import { createLineChart } from './utils';
 
 import './LineChart.scss'
 
@@ -9,7 +9,7 @@ class LineChart extends Component<any> {
     }
 
     componentDidMount() {
-        createAxes(this.props);
+        createLineChart(this.props);
     }
 
     render() {

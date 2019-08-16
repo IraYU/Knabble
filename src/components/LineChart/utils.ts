@@ -5,7 +5,7 @@ import {
 } from 'd3';
 import { Data, Point } from "./types";
 
-export const createAxes = (props: any) => {
+export const createLineChart = (props: any) => {
     const {
         className, plotIndents,
         dotsRadius, sortData,
