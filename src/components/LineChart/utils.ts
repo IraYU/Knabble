@@ -1,7 +1,7 @@
 import {
     scaleLinear, select, axisBottom, axisLeft,
     line, curveCatmullRom, drag, event,
-    brush, brushX,
+    brush, brushX, extent, max
 } from 'd3';
 import { Data, Point } from "./types";
 
@@ -9,6 +9,7 @@ export const createAxes = (props: any) => {
     const {
         className, plotIndents,
         dotsRadius, sortData,
+        xAxisMax, yAxisMax,
     } = props;
 
     const sortByX = (a: Point, b: Point) => a[0] < b[0] ? -1 : 1;
@@ -16,6 +17,8 @@ export const createAxes = (props: any) => {
     const data: Data = sortData ? props.data.sort(sortByX) : props.data;
     const width: number = props.width - plotIndents.left - plotIndents.right;
     const height: number =  props.height - plotIndents.top - plotIndents.bottom;
+    const maxX = xAxisMax || max(data, function(d) { return d[0]; });
+    const maxY = yAxisMax || max(data, function(d) { return d[1]; });
 
     const getColors = (className: string, i: number) =>`${className} ${className}-${i}`;
 
@@ -25,14 +28,14 @@ export const createAxes = (props: any) => {
 
     // Add Axises
     const xScale = scaleLinear()
-        .domain([0, data.length])
+        .domain([0, maxX])
         .range([0, width]);
     const xAxis = svg.append('g')
         .attr('class', 'axis axis-x')
         .attr('transform', `translate(0, ${height})`)
         .call(axisBottom(xScale));
     const yScale = scaleLinear()
-        .domain([0, 1])
+        .domain([0, maxY])
         .range([height, 0]);
     const yAxis = svg.append('g')
         .attr('class', 'axis axis-y')

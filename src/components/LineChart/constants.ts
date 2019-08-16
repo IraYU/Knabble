@@ -8,6 +8,12 @@ export const data = [
     [2, 0.3], [5, 0.28], [8, 0.4],
 ];
 
+export const dataSmall = [
+    [5, 20], [11, 100], [13, 0.32],
+    [10, 25], [17, 30], [6, 3],
+    [16, 87], [8, 22], [20, 44],
+];
+
 export const defaultProps = {
     plotIndents: {
         left: 25,

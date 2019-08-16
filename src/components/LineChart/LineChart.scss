@@ -5,6 +5,10 @@ $colors: #e6194b, #3cb44b, #ffe119, #4363d8,
 #000075, #808080, #6a66d7, #c2f221;
 
 .line-chart {
+  &-test {
+    margin-bottom: 40px;
+  }
+
   .axis * {
     stroke: #999;
 
