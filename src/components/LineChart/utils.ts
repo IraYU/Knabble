@@ -59,11 +59,11 @@ export const createLineChart = (props: any) => {
             x:  0,
             y:  0,
         });*/
-        .attr('transform', )
-        .attr('width', width + dotSise * 2)
-        .attr('height', height + dotSise * 2)
         .attr('x', 0)
-        .attr('y', 0);
+        .attr('y', 0)
+        .attr('transform', `translate(-${dotSise}, -${dotSise})`)
+        .attr('width', width + dotSise * 2)
+        .attr('height', height + dotSise * 2);
 
     const brushZoomArea = svg
         .append('g')
@@ -121,7 +121,6 @@ export const createLineChart = (props: any) => {
             })
         );
 
-
     const brushDotsArea = select(`.${className}`)
         .on( 'mousedown', function() {
             if( !event.ctrlKey) {
@@ -138,26 +137,28 @@ export const createLineChart = (props: any) => {
                 .attr('height', 0)
         })
         .on( 'mousemove', function() {
-            const brushArea = select( `.${className} rect.selected-dots`);
+            const brushArea = select( '.selected-dots');
 
             if( !brushArea.empty()) {
                 const mousePoint = mouse(<any>this);
                 const d: any = {
-                    x       : parseInt( brushArea.attr( 'x'), 10),
-                    y       : parseInt( brushArea.attr( 'y'), 10),
-                    width   : parseInt( brushArea.attr( 'width'), 10),
-                    height  : parseInt( brushArea.attr( 'height'), 10)
+                    x: parseInt( brushArea.attr( 'x'), 10),
+                    y: parseInt( brushArea.attr( 'y'), 10),
+                    width: parseInt( brushArea.attr( 'width'), 10),
+                    height: parseInt( brushArea.attr( 'height'), 10)
                 };
                 const move = [mousePoint[0] - d.x, mousePoint[1] - d.y];
 
-                if( move[0] < 1 || (move[0]*2<d.width)) {
+                console.log(move)
+
+                if( move[0] < 1 || (move[0] * 2 < d.width)) {
                     d.x = mousePoint[0];
                     d.width -= move[0];
                 } else {
                     d.width = move[0];
                 }
 
-                if( move[1] < 1 || (move[1]*2<d.height)) {
+                if( move[1] < 1 || (move[1] * 2 < d.height)) {
                     d.y = mousePoint[1];
                     d.height -= move[1];
                 } else {
@@ -170,7 +171,7 @@ export const createLineChart = (props: any) => {
                     .attr('width', d.width)
                     .attr('height', d.height);
 
-                selectAll( `.${className} .dot.selected-dots.brushed`).classed( 'brushed', false);
+                selectAll( '.dot.brushed').classed( 'brushed', false);
 
                 selectAll( `.${className} .dot`)
                     .each( function( dot: any) {
@@ -181,15 +182,13 @@ export const createLineChart = (props: any) => {
                         yScale(dot[1]) + dotsRadius <= d.y + d.height
                     ) {
                         select(this)
-                            .classed( 'selected-dots', true)
                             .classed( 'brushed', true);
                     }
                 });
             }
         })
         .on( 'mouseup', function() {
-            select( 'rect.selected-dots').remove();
-            selectAll( '.dots.selected-dots').classed( 'selected-dots', false);
+            select( '.selected-dots').remove();
         });
 
     let idleTimeout: any;
