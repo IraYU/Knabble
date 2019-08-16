@@ -16,7 +16,7 @@ export const dataSmall = [
 
 export const defaultProps = {
     plotIndents: {
-        left: 25,
+        left: 35,
         right: 25,
         top: 25,
         bottom: 25,
@@ -26,4 +26,5 @@ export const defaultProps = {
 export const defaultLineChartProps = {
     ...defaultProps,
     dotsRadius: 4,
+    dotsStrokeWidth: 2,
 };
