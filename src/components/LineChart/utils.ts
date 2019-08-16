@@ -3,6 +3,7 @@ import {
     line, curveCatmullRom, drag, event,
     brush, brushX,
 } from 'd3';
+import { Data, Point } from "./types";
 
 export const createAxes = (props: any) => {
     const {
@@ -10,11 +11,11 @@ export const createAxes = (props: any) => {
         dotsRadius, sortData,
     } = props;
 
-    const sortByX = (a: any, b: any) => a[0] < b[0] ? -1 : 1;
+    const sortByX = (a: Point, b: Point) => a[0] < b[0] ? -1 : 1;
 
-    const data = sortData ? props.data.sort(sortByX) : props.data;
-    const width = props.width - plotIndents.left - plotIndents.right;
-    const height =  props.height - plotIndents.top - plotIndents.bottom;
+    const data: Data = sortData ? props.data.sort(sortByX) : props.data;
+    const width: number = props.width - plotIndents.left - plotIndents.right;
+    const height: number =  props.height - plotIndents.top - plotIndents.bottom;
 
     const getColors = (className: string, i: number) =>`${className} ${className}-${i}`;
 
@@ -64,8 +65,8 @@ export const createAxes = (props: any) => {
 
     // Create line
     const lineData = line()
-        .x((d: any) =>  xScale(d[0]))
-        .y((d: any) => yScale(d[1]))
+        .x((d: Point) =>  xScale(d[0]))
+        .y((d: Point) => yScale(d[1]))
         .curve(curveCatmullRom.alpha(0.5));
 
     // Create line chart
@@ -79,12 +80,12 @@ export const createAxes = (props: any) => {
         .data(data)
         .enter()
         .append('circle')
-        .attr('class', (d: any, i: number) => getColors('dot', i))
+        .attr('class', (d: Point, i: number) => getColors('dot', i))
         .attr('r', dotsRadius)
-        .attr('cx', (d: any) => xScale(d[0]) )
-        .attr('cy', (d: any) => yScale(d[1]))
+        .attr('cx', (d: Point) => xScale(d[0]) )
+        .attr('cy', (d: Point) => yScale(d[1]))
         .call(<any>drag()
-            .on('start', function(d: any) {
+            .on('start', function() {
                 select(this).raise().classed('selected', true);
             })
             .on('drag', function(d: any) {
@@ -98,7 +99,7 @@ export const createAxes = (props: any) => {
 
                 svg.select('.line').datum(data).attr('d', lineData);
             })
-            .on('end', function(d: any) {
+            .on('end', function() {
                 select(this)
                     .classed('selected', false)
                     .classed('moved', true)
@@ -111,7 +112,7 @@ export const createAxes = (props: any) => {
         if (event.sourceEvent.type === 'mouseup') {
             svg.select('.brush-left-button').call(<any>dotsBrush.move, null)
         }
-        dots.classed( 'brushed', (d: any) => brushArea && isBrushed(brushArea, xScale(d[0]), yScale(d[1])));
+        dots.classed( 'brushed', (d: Point) => brushArea && isBrushed(brushArea, xScale(d[0]), yScale(d[1])));
     }
 
     let idleTimeout: any;
@@ -141,15 +142,15 @@ export const createAxes = (props: any) => {
             .attr('d', <any>lineData);
         dots.transition()
             .duration(1000)
-            .attr('cx', (d: any) => xScale(d[0]) )
-            .attr('cy', (d: any) => yScale(d[1]))
+            .attr('cx', (d: Point) => xScale(d[0]) )
+            .attr('cy', (d: Point) => yScale(d[1]));
         svg.select('.brush').call(<any>zoomBrush.move, null)
     }
 
     function resetZoom() {
         svg.on('dblclick',function(){
-            xScale.domain([0, data.length])
-            xAxis.transition().duration(1000).call(axisBottom(xScale))
+            xScale.domain([0, data.length]);
+            xAxis.transition().duration(1000).call(axisBottom(xScale));
 
             svg.select('.line')
                 .transition()
@@ -157,13 +158,13 @@ export const createAxes = (props: any) => {
                 .attr('d', <any>lineData);
             dots.transition()
                 .duration(1000)
-                .attr('cx', (d: any) => xScale(d[0]) )
-                .attr('cy', (d: any) => yScale(d[1]))
+                .attr('cx', (d: Point) => xScale(d[0]) )
+                .attr('cy', (d: Point) => yScale(d[1]))
 
         });
     }
 
-    function isBrushed(brushArea: any, cx: number, cy: number) {
+    function isBrushed(brushArea: Data, cx: number, cy: number) {
         let x0 = brushArea[0][0],
             x1 = brushArea[1][0],
             y0 = brushArea[0][1],
