@@ -52,13 +52,6 @@ export const createLineChart = (props: any) => {
         .append('svg:clipPath')
         .attr('id', 'clip')
         .append('svg:rect')
-/*        .attrs({
-            transform: `translate(-${dotSise}, -${dotSise})`,
-            width: width + dotSise * 2,
-            height:  height + dotSise * 2,
-            x:  0,
-            y:  0,
-        });*/
         .attr('x', 0)
         .attr('y', 0)
         .attr('transform', `translate(-${dotSise}, -${dotSise})`)
@@ -121,7 +114,7 @@ export const createLineChart = (props: any) => {
             })
         );
 
-    const brushDotsArea = select(`.${className}`)
+    const brushDotsArea = select(`.${className} > g`)
         .on( 'mousedown', function() {
             if( !event.ctrlKey) {
                 selectAll( '.dot.brushed').classed( 'brushed', false);
@@ -139,7 +132,7 @@ export const createLineChart = (props: any) => {
         .on( 'mousemove', function() {
             const brushArea = select( '.selected-dots');
 
-            if( !brushArea.empty()) {
+            if( brushArea.node()) {
                 const mousePoint = mouse(<any>this);
                 const d: any = {
                     x: parseInt( brushArea.attr( 'x'), 10),
