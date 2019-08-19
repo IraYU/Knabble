@@ -129,6 +129,7 @@ export const createLineChart = (props: any) => {
                 .attr('y', mousePoint[1])
                 .attr('width', 0)
                 .attr('height', 0)
+                .attr('transform', `translate(${dotSize*2}, ${dotSize*2})`)
         })
         .on( 'mousemove', function() {
             const brushArea = select( '.selected-dots');
@@ -142,8 +143,6 @@ export const createLineChart = (props: any) => {
                     height: parseInt( brushArea.attr( 'height'), 10)
                 };
                 const move = [mousePoint[0] - d.x, mousePoint[1] - d.y];
-
-                console.log(move)
 
                 if( move[0] < 1 || (move[0] * 2 < d.width)) {
                     d.x = mousePoint[0];
@@ -170,10 +169,10 @@ export const createLineChart = (props: any) => {
                 selectAll( `.${className} .dot`)
                     .each( function( dot: any) {
                     if(!select(this).classed( 'brushed') &&
-                        xScale(dot[0]) - dotsRadius >= d.x &&
-                        xScale(dot[0]) + dotsRadius <= d.x + d.width &&
-                        yScale(dot[1]) - dotsRadius >= d.y &&
-                        yScale(dot[1]) + dotsRadius <= d.y + d.height
+                        xScale(dot[0]) >= d.x &&
+                        xScale(dot[0]) <= d.x + d.width &&
+                        yScale(dot[1]) >= d.y &&
+                        yScale(dot[1]) <= d.y + d.height
                     ) {
                         select(this)
                             .classed( 'brushed', true);
