@@ -1,7 +1,7 @@
 import {
     scaleLinear, select, axisBottom, axisLeft,
     line, curveCatmullRom, drag, event,
-    brush, brushX, extent, max, mouse, selectAll
+    brushX, max, mouse, selectAll
 } from 'd3';
 import { Data, Point } from './types';
 
@@ -17,7 +17,7 @@ export const createLineChart = (props: any) => {
     const data: Data = sortData ? props.data.sort(sortByX) : props.data;
     const width: number = props.width - plotIndents.left - plotIndents.right;
     const height: number =  props.height - plotIndents.top - plotIndents.bottom;
-    const dotSise: number = dotsRadius + dotsStrokeWidth;
+    const dotSize: number = dotsRadius + dotsStrokeWidth;
     const maxX: number = xAxisMax || max(data, function(d: Point) { return d[0]; });
     const maxY: number = yAxisMax || max(data, function(d: Point) { return d[1]; });
 
@@ -54,9 +54,9 @@ export const createLineChart = (props: any) => {
         .append('svg:rect')
         .attr('x', 0)
         .attr('y', 0)
-        .attr('transform', `translate(-${dotSise}, -${dotSise})`)
-        .attr('width', width + dotSise * 2)
-        .attr('height', height + dotSise * 2);
+        .attr('transform', `translate(-${dotSize}, -${dotSize})`)
+        .attr('width', width + dotSize * 2)
+        .attr('height', height + dotSize * 2);
 
     const brushZoomArea = svg
         .append('g')
@@ -116,6 +116,7 @@ export const createLineChart = (props: any) => {
 
     const brushDotsArea = select(`.${className} > g`)
         .on( 'mousedown', function() {
+            select( '.selected-dots').remove();
             if( !event.ctrlKey) {
                 selectAll( '.dot.brushed').classed( 'brushed', false);
             }
@@ -230,9 +231,9 @@ export const createLineChart = (props: any) => {
             svg.select('#clip rect')
                 .transition()
                 .duration(1000)
-                .attr('transform', `translate(-${dotSise}, -${dotSise})`)
-                .attr('width', width + dotSise * 2)
-                .attr('height', height + dotSise * 2);
+                .attr('transform', `translate(-${dotSize}, -${dotSize})`)
+                .attr('width', width + dotSize * 2)
+                .attr('height', height + dotSize * 2);
             svg.select('.line')
                 .transition()
                 .duration(1000)

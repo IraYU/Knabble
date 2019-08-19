@@ -23,4 +23,4 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 **Note: there is only one test for lineChart component that shows rendering without crashing. But unfortunately we can render only svg tag.
 This is because of Enzyme is limited to what React exposes, and React is not aware of the appended elements by D3.js.
-There is the information that it can be fixed by using. `react-faux-dom` [https://github.com/Olical/react-faux-dom]**
+There is the information that it can be fixed by using `react-faux-dom` [https://github.com/Olical/react-faux-dom]**
