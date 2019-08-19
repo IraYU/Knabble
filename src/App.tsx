@@ -28,8 +28,19 @@ const App: React.FC = () => {
             height={200}
             sortData={true}
         />
+
+        <h2>D3 line chart #3</h2>
+        <h5>(There are differences in sizes and data sorting relative to the #2)</h5>
+        <LineChart
+            {...defaultLineChartProps}
+            key={'line-chart-3'}
+            className="line-chart-test-3"
+            data={[...dataSmall]}
+            width={400}
+            height={400}
+        />
     </div>
   );
-};
+}
 
 export default App;

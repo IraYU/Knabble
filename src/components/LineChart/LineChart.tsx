@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { createLineChart } from './utils';
+import { Props } from './types';
 
 import './LineChart.scss'
 
 class LineChart extends Component<any> {
-    constructor(props: any) {
+    constructor(props: Props) {
         super(props);
     }
 
