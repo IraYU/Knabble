@@ -98,7 +98,7 @@ export const createLineChart = (props: any) => {
             })
             .on('drag', function(d: any) {
                 d[1] = yScale.invert(event.y) < 0 ? 0
-                    : yScale.invert(event.y) > 1 ? 1
+                    : yScale.invert(event.y) > maxY ? maxY
                         : yScale.invert(event.y);
 
                 select(this)
